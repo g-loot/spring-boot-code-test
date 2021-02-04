@@ -1,4 +1,4 @@
-package com.gloot.springbootcodetest.leaderboard;
+package com.gloot.springbootcodetest.leaderboard.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

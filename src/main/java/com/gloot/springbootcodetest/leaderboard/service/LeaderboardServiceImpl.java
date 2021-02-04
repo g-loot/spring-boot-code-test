@@ -1,5 +1,8 @@
-package com.gloot.springbootcodetest.leaderboard;
+package com.gloot.springbootcodetest.leaderboard.service;
 
+import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardEntryDto;
+import com.gloot.springbootcodetest.leaderboard.mapper.LeaderboardEntryMapper;
+import com.gloot.springbootcodetest.leaderboard.repository.LeaderboardRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

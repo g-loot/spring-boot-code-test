@@ -1,4 +1,7 @@
-package com.gloot.springbootcodetest.leaderboard;
+package com.gloot.springbootcodetest.leaderboard.mapper;
+
+import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardEntryDto;
+import com.gloot.springbootcodetest.leaderboard.entity.LeaderboardEntryEntity;
 
 public class LeaderboardEntryMapper {
 
