@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.gloot.springbootcodetest.SpringBootComponentTest;
 import java.util.List;
+import java.util.stream.IntStream;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,18 +16,22 @@ public class LeaderboardServiceTest {
   @Autowired LeaderboardService service;
 
   @Test
-  void getLeaderboard() {
-    List<LeaderboardEntryEntity> entities = List
-        .of(new LeaderboardEntryEntity(1, "g-looter-1", 100),
-            new LeaderboardEntryEntity(2, "g-looter-2", 90));
+  void getListOfAllLeaderboardEntriesAsDTO() {
+    List<LeaderboardEntryEntity> entities = List.of(
+            createLeaderboardEntry(1, "g-looter-1", 100),
+            createLeaderboardEntry(2, "g-looter-2", 90)
+    );
     repository.saveAll(entities);
 
-    List<LeaderboardEntryDto> leaderboard = service
-        .getListOfAllLeaderboardEntriesAsDTO();
+    List<LeaderboardEntryDto> leaderboard = service.getListOfAllLeaderboardEntriesAsDTO();
+
     assertEquals(entities.size(), leaderboard.size());
-    for(int i=0;i<entities.size();i++){
-      assertEqual(entities.get(i), leaderboard.get(i));
-    }
+    IntStream.range(0, entities.size())
+            .forEach(count -> assertEqual(entities.get(count), leaderboard.get(count)));
+  }
+
+  private LeaderboardEntryEntity createLeaderboardEntry(int pos, String nick, int score) {
+    return new LeaderboardEntryEntity(pos, nick, score);
   }
 
   private void assertEqual(LeaderboardEntryEntity entity, LeaderboardEntryDto dto) {
