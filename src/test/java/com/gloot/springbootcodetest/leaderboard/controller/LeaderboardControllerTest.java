@@ -60,4 +60,30 @@ public class LeaderboardControllerTest {
                 .andExpect(jsonPath("$.[1].id", is(secondLeaderboard.getId())))
                 .andExpect(jsonPath("$.[1].name", is(secondLeaderboard.getName())));
     }
+
+    @Test
+    void getPositionOfUser() throws Exception {
+        LeaderboardEntity leaderboardEntity = new LeaderboardEntity(1, "leaderboard-1");
+        leaderboardRepository.save(leaderboardEntity);
+        LeaderboardEntryEntity firstEntry = new LeaderboardEntryEntity(1, "g-looter", 100, leaderboardEntity);
+        LeaderboardEntryEntity secondEntry = new LeaderboardEntryEntity(2, "h-looter", 90, leaderboardEntity);
+        leaderboardEntryRepository.saveAll(List.of(firstEntry, secondEntry));
+
+        mockMvc.perform(get("/api/v1/getPosition/h-looter/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", is(2)));
+    }
+
+    @Test
+    void getPositionOfUser_notFound() throws Exception {
+        LeaderboardEntity leaderboardEntity = new LeaderboardEntity(1, "leaderboard-1");
+        leaderboardRepository.save(leaderboardEntity);
+        LeaderboardEntryEntity firstEntry = new LeaderboardEntryEntity(1, "g-looter", 100, leaderboardEntity);
+        LeaderboardEntryEntity secondEntry = new LeaderboardEntryEntity(2, "h-looter", 90, leaderboardEntity);
+        leaderboardEntryRepository.saveAll(List.of(firstEntry, secondEntry));
+
+        mockMvc.perform(get("/api/v1/getPosition/j-looter/2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").doesNotExist());
+    }
 }

@@ -10,8 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootComponentTest
@@ -40,6 +44,34 @@ public class LeaderboardEntryServiceTest {
                 .forEach(count -> assertEqual(entities.get(count), listOfAllLeaderboardEntriesAsDTO.get(count)));
     }
 
+    @Test
+    void getPositionOfUser() {
+        LeaderboardEntity leaderboard = saveLeaderboard(1, "leaderboard-1");
+        List<LeaderboardEntryEntity> entities = List.of(
+                createLeaderboardEntry(1, "g-looter-1", 100, leaderboard),
+                createLeaderboardEntry(2, "g-looter-2", 90, leaderboard)
+        );
+        repository.saveAll(entities);
+
+        Optional<Integer> positionOfUser = service.getPositionOfUser("g-looter-2", 1);
+
+        assertThat("position of the user ", positionOfUser, not(Optional.empty()));
+        assertThat("position ", positionOfUser.get(), is(2));
+    }
+
+    @Test
+    void getPositionOfUser_notFound() {
+        LeaderboardEntity leaderboard = saveLeaderboard(1, "leaderboard-1");
+        List<LeaderboardEntryEntity> entities = List.of(
+                createLeaderboardEntry(1, "g-looter-1", 100, leaderboard),
+                createLeaderboardEntry(2, "g-looter-2", 90, leaderboard)
+        );
+        repository.saveAll(entities);
+
+        Optional<Integer> positionOfUser = service.getPositionOfUser("g-looter-3", 1);
+
+        assertThat("position of the user ", positionOfUser, is(Optional.empty()));
+    }
 
     private LeaderboardEntity saveLeaderboard(int id, String name) {
         LeaderboardEntity leaderboardEntity = new LeaderboardEntity(id, name);
