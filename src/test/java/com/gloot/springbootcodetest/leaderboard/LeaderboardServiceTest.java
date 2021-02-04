@@ -7,7 +7,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class LeaderboardServiceTest extends SpringBootComponentTest {
+@SpringBootComponentTest
+public class LeaderboardServiceTest {
 
   @Autowired LeaderboardRepository repository;
   @Autowired LeaderboardService service;

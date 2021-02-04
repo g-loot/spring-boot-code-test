@@ -8,7 +8,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class LeaderboardRepositoryTest extends SpringBootComponentTest {
+@SpringBootComponentTest
+public class LeaderboardRepositoryTest {
   @Autowired LeaderboardRepository repository;
 
   @Test
