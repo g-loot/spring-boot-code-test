@@ -21,6 +21,14 @@ public class LeaderboardEntryServiceImpl implements LeaderboardEntryService {
     private final LeaderboardEntryRepository leaderboardEntryRepository;
 
     @Override
+    public Optional<LeaderboardEntryEntity> getLeaderboardEntryForUser(String username) {
+        LeaderboardEntryEntitySearchCriteria searchCriteria = new LeaderboardEntryEntitySearchCriteria();
+        searchCriteria.setNick(username);
+
+        return leaderboardEntryRepository.findOne(LeaderboardEntrySpecifications.create(searchCriteria));
+    }
+
+    @Override
     public List<LeaderboardEntryDto> getListOfAllLeaderboardEntriesAsDTO() {
 
         return leaderboardEntryRepository.findAll()
@@ -38,5 +46,14 @@ public class LeaderboardEntryServiceImpl implements LeaderboardEntryService {
 
         return leaderboardEntryRepository.findOne(LeaderboardEntrySpecifications.create(searchCriteria))
                 .map(LeaderboardEntryEntity::getPos);
+    }
+
+    @Override
+    public LeaderboardEntryDto setScore(LeaderboardEntryEntity leaderboardEntryEntity, int score) {
+        leaderboardEntryEntity.setScore(score);
+
+        LeaderboardEntryEntity updatedLeaderboardEntry = leaderboardEntryRepository.save(leaderboardEntryEntity);
+
+        return LeaderboardEntryMapper.mapToDto(updatedLeaderboardEntry);
     }
 }

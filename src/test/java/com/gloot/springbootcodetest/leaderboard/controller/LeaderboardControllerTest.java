@@ -7,6 +7,7 @@ import com.gloot.springbootcodetest.leaderboard.repository.LeaderboardEntryRepos
 import com.gloot.springbootcodetest.leaderboard.repository.LeaderboardRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -85,5 +87,35 @@ public class LeaderboardControllerTest {
         mockMvc.perform(get("/api/v1/getPosition/j-looter/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").doesNotExist());
+    }
+
+    @Test
+    void setScoreForUser() throws Exception {
+        LeaderboardEntity leaderboardEntity = new LeaderboardEntity(1, "leaderboard-1");
+        leaderboardRepository.save(leaderboardEntity);
+        LeaderboardEntryEntity firstEntry = new LeaderboardEntryEntity(1, "g-looter", 100, leaderboardEntity);
+        LeaderboardEntryEntity secondEntry = new LeaderboardEntryEntity(2, "h-looter", 90, leaderboardEntity);
+        leaderboardEntryRepository.saveAll(List.of(firstEntry, secondEntry));
+
+        mockMvc.perform(put("/api/v1/setScoreForUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"nick\": \"g-looter\", \"score\": 50}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.nick", is("g-looter")))
+                .andExpect(jsonPath("$.score", is(50)));
+    }
+
+    @Test
+    void setScoreForUser_leaderboardEntryNotFoundForUser() throws Exception {
+        LeaderboardEntity leaderboardEntity = new LeaderboardEntity(1, "leaderboard-1");
+        leaderboardRepository.save(leaderboardEntity);
+        LeaderboardEntryEntity firstEntry = new LeaderboardEntryEntity(1, "g-looter", 100, leaderboardEntity);
+        LeaderboardEntryEntity secondEntry = new LeaderboardEntryEntity(2, "h-looter", 90, leaderboardEntity);
+        leaderboardEntryRepository.saveAll(List.of(firstEntry, secondEntry));
+
+        mockMvc.perform(put("/api/v1/setScoreForUser")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{ \"nick\": \"g-looter123\", \"score\": 50}"))
+                .andExpect(status().isNotFound());
     }
 }

@@ -29,6 +29,35 @@ public class LeaderboardEntryServiceTest {
     LeaderboardEntryService service;
 
     @Test
+    void getLeaderboardEntryForUser() {
+        LeaderboardEntity leaderboard = saveLeaderboard(1, "leaderboard-1");
+        List<LeaderboardEntryEntity> entities = List.of(
+                createLeaderboardEntry(1, "g-looter-1", 100, leaderboard),
+                createLeaderboardEntry(2, "g-looter-2", 90, leaderboard)
+        );
+        repository.saveAll(entities);
+
+        Optional<LeaderboardEntryEntity> leaderboardEntryForUser = service.getLeaderboardEntryForUser("g-looter-1");
+
+        assertThat("leaderboardEntry user ", leaderboardEntryForUser, not(Optional.empty()));
+        assertThat("leaderboardEntry ", leaderboardEntryForUser.get(), is(entities.get(0)));
+    }
+
+    @Test
+    void getLeaderboardEntryForUser_notFound() {
+        LeaderboardEntity leaderboard = saveLeaderboard(1, "leaderboard-1");
+        List<LeaderboardEntryEntity> entities = List.of(
+                createLeaderboardEntry(1, "g-looter-1", 100, leaderboard),
+                createLeaderboardEntry(2, "g-looter-2", 90, leaderboard)
+        );
+        repository.saveAll(entities);
+
+        Optional<LeaderboardEntryEntity> leaderboardEntryForUser = service.getLeaderboardEntryForUser("g-looter-12");
+
+        assertThat("leaderboardEntry user ", leaderboardEntryForUser, is(Optional.empty()));
+    }
+
+    @Test
     void getListOfAllLeaderboardEntriesAsDTO() {
         LeaderboardEntity leaderboard = saveLeaderboard(1, "leaderboard-1");
         List<LeaderboardEntryEntity> entities = List.of(
@@ -71,6 +100,20 @@ public class LeaderboardEntryServiceTest {
         Optional<Integer> positionOfUser = service.getPositionOfUser("g-looter-3", 1);
 
         assertThat("position of the user ", positionOfUser, is(Optional.empty()));
+    }
+
+    @Test
+    void setScoreForUser() {
+        LeaderboardEntity leaderboard = saveLeaderboard(1, "leaderboard-1");
+        List<LeaderboardEntryEntity> entities = List.of(
+                createLeaderboardEntry(1, "g-looter-1", 100, leaderboard),
+                createLeaderboardEntry(2, "g-looter-2", 90, leaderboard)
+        );
+        repository.saveAll(entities);
+
+        LeaderboardEntryDto updatedLeaderboardEntryDto = service.setScore(entities.get(0), 50);
+
+        assertThat("updated score ", updatedLeaderboardEntryDto.getScore(), is(50));
     }
 
     private LeaderboardEntity saveLeaderboard(int id, String name) {
