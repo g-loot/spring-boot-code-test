@@ -1,4 +1,4 @@
-package com.gloot.springbootcodetest.leaderboard;
+package com.gloot.springbootcodetest.leaderboard.controller;
 
 import com.gloot.springbootcodetest.SpringBootComponentTest;
 import com.gloot.springbootcodetest.leaderboard.entity.LeaderboardEntryEntity;
