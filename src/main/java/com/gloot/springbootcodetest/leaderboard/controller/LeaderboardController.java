@@ -1,7 +1,9 @@
 package com.gloot.springbootcodetest.leaderboard.controller;
 
 
+import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardDto;
 import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardEntryDto;
+import com.gloot.springbootcodetest.leaderboard.service.LeaderboardEntryService;
 import com.gloot.springbootcodetest.leaderboard.service.LeaderboardService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,14 +15,20 @@ import java.util.List;
 import static com.gloot.springbootcodetest.Application.API_VERSION_1;
 
 @RestController
-@RequestMapping(API_VERSION_1 + "/leaderboard")
+@RequestMapping(API_VERSION_1)
 @AllArgsConstructor
 public class LeaderboardController {
 
-    private final LeaderboardService service;
+    private final LeaderboardService leaderboardService;
+    private final LeaderboardEntryService leaderboardEntryService;
 
-    @GetMapping
+    @GetMapping("/leaderboard")
     public List<LeaderboardEntryDto> getLeaderboard() {
-        return service.getListOfAllLeaderboardEntriesAsDTO();
+        return leaderboardEntryService.getListOfAllLeaderboardEntriesAsDTO();
+    }
+
+    @GetMapping("/allLeaderboards")
+    public List<LeaderboardDto> getAllLeaderboards() {
+        return leaderboardService.getAllLeaderboards();
     }
 }

@@ -5,9 +5,7 @@ import lombok.Value;
 
 @Builder
 @Value
-public class LeaderboardEntryDto {
-  int position;
-  String nick;
-  int score;
-  LeaderboardDto leaderboardDto;
+public class LeaderboardDto {
+    int id;
+    String name;
 }

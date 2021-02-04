@@ -1,12 +1,11 @@
 package com.gloot.springbootcodetest.leaderboard.service;
 
-import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardEntryDto;
-import com.gloot.springbootcodetest.leaderboard.mapper.LeaderboardEntryMapper;
+import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardDto;
+import com.gloot.springbootcodetest.leaderboard.mapper.LeaderboardMapper;
 import com.gloot.springbootcodetest.leaderboard.repository.LeaderboardRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,12 +16,10 @@ public class LeaderboardServiceImpl implements LeaderboardService {
     private final LeaderboardRepository leaderboardRepository;
 
     @Override
-    public List<LeaderboardEntryDto> getListOfAllLeaderboardEntriesAsDTO() {
-
+    public List<LeaderboardDto> getAllLeaderboards() {
         return leaderboardRepository.findAll()
                 .stream()
-                .map(LeaderboardEntryMapper::mapToDto)
-                .sorted(Comparator.comparing(LeaderboardEntryDto::getPosition))
+                .map(LeaderboardMapper::mapToDto)
                 .collect(Collectors.toList());
     }
 }

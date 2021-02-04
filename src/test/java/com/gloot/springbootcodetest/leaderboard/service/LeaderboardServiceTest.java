@@ -1,48 +1,43 @@
 package com.gloot.springbootcodetest.leaderboard.service;
 
 import com.gloot.springbootcodetest.SpringBootComponentTest;
-import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardEntryDto;
-import com.gloot.springbootcodetest.leaderboard.entity.LeaderboardEntryEntity;
+import com.gloot.springbootcodetest.leaderboard.dto.LeaderboardDto;
+import com.gloot.springbootcodetest.leaderboard.entity.LeaderboardEntity;
 import com.gloot.springbootcodetest.leaderboard.repository.LeaderboardRepository;
-import com.gloot.springbootcodetest.leaderboard.service.LeaderboardService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 
 @SpringBootComponentTest
 public class LeaderboardServiceTest {
 
     @Autowired
-    LeaderboardRepository repository;
+    LeaderboardRepository leaderboardRepository;
     @Autowired
-    LeaderboardService service;
+    LeaderboardService leaderboardService;
 
     @Test
-    void getListOfAllLeaderboardEntriesAsDTO() {
-        List<LeaderboardEntryEntity> entities = List.of(
-                createLeaderboardEntry(1, "g-looter-1", 100),
-                createLeaderboardEntry(2, "g-looter-2", 90)
-        );
-        repository.saveAll(entities);
+    void getAllLeaderboards() {
+        LeaderboardEntity firstLeaderboard = new LeaderboardEntity(1, "leaderboard-1");
+        LeaderboardEntity secondLeaderboard = new LeaderboardEntity(2, "leaderboard-2");
+        List<LeaderboardEntity> leaderboardEntities = List.of(firstLeaderboard, secondLeaderboard);
+        leaderboardRepository.saveAll(leaderboardEntities);
 
-        List<LeaderboardEntryDto> leaderboard = service.getListOfAllLeaderboardEntriesAsDTO();
+        List<LeaderboardDto> leaderboardDtoList = leaderboardService.getAllLeaderboards();
 
-        assertEquals(entities.size(), leaderboard.size());
-        IntStream.range(0, entities.size())
-                .forEach(count -> assertEqual(entities.get(count), leaderboard.get(count)));
+        assertThat("fetched leaderboards ", leaderboardDtoList, hasSize(2));
+        IntStream.range(0, leaderboardEntities.size())
+                .forEach(index -> assertLeaderboard(leaderboardEntities.get(index), leaderboardDtoList.get(index)));
     }
 
-    private LeaderboardEntryEntity createLeaderboardEntry(int pos, String nick, int score) {
-        return new LeaderboardEntryEntity(pos, nick, score);
-    }
-
-    private void assertEqual(LeaderboardEntryEntity entity, LeaderboardEntryDto dto) {
-        assertEquals(entity.getPos(), dto.getPosition());
-        assertEquals(entity.getNick(), dto.getNick());
-        assertEquals(entity.getScore(), dto.getScore());
+    private void assertLeaderboard(LeaderboardEntity leaderboardEntity, LeaderboardDto leaderboardDto) {
+        assertThat("id ", leaderboardDto.getId(), is(leaderboardEntity.getId()));
+        assertThat("name ", leaderboardDto.getName(), is(leaderboardEntity.getName()));
     }
 }
