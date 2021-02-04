@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringBootComponentTest
 public class LeaderboardRepositoryTest {
+
   @Autowired LeaderboardRepository repository;
 
   @Test

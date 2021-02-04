@@ -16,7 +16,8 @@ public class LeaderboardServiceImpl implements LeaderboardService {
     @Override
     public List<LeaderboardEntryDto> getListOfAllLeaderboardEntriesAsDTO() {
 
-        return leaderboardRepository.findAll().stream()
+        return leaderboardRepository.findAll()
+                .stream()
                 .map(LeaderboardEntryMapper::mapToDto)
                 .sorted(Comparator.comparing(LeaderboardEntryDto::getPosition))
                 .collect(Collectors.toList());

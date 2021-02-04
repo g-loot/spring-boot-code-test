@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(API_VERSION_1 + "/leaderboard")
 @AllArgsConstructor
 public class LeaderboardController {
+
   private final LeaderboardService service;
 
   @GetMapping
