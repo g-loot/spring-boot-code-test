@@ -1,8 +1,7 @@
 package com.gloot.springbootcodetest.leaderboard;
 
-import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LeaderboardRepository extends JpaRepository<LeaderboardEntryEntity, UUID> {}
+public interface LeaderboardEntryRepository extends JpaRepository<LeaderboardEntry, String> {}

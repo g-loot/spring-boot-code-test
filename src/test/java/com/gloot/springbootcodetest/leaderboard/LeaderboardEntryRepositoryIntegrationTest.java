@@ -5,17 +5,23 @@ import static org.hamcrest.core.Is.is;
 
 import com.gloot.springbootcodetest.SpringBootComponentTest;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class LeaderboardRepositoryTest extends SpringBootComponentTest {
-  @Autowired LeaderboardRepository repository;
+public class LeaderboardEntryRepositoryIntegrationTest extends SpringBootComponentTest {
+  @Autowired LeaderboardEntryRepository repository;
+
+  @AfterEach
+  void tearDown() {
+    repository.deleteAll();
+  }
 
   @Test
   void saveAndRetrieve() {
-    LeaderboardEntryEntity entity = new LeaderboardEntryEntity("g-looter", 100);
+    LeaderboardEntry entity = new LeaderboardEntry("g-looter", 100);
     repository.saveAll(List.of(entity));
-    LeaderboardEntryEntity fromRepository = repository.findById(entity.getUuid()).get();
+    LeaderboardEntry fromRepository = repository.findById(entity.getId()).get();
     assertThat(fromRepository, is(entity));
   }
 }
