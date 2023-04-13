@@ -1,6 +1,5 @@
 package com.gloot.springbootcodetest.leaderboard;
 
-
 import static com.gloot.springbootcodetest.Application.API_VERSION_1;
 
 import java.util.List;

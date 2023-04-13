@@ -8,21 +8,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.gloot.springbootcodetest.SpringBootComponentTest;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
-public class LeaderboardControllerTest extends SpringBootComponentTest {
+public class LeaderboardControllerIntegrationTest extends SpringBootComponentTest {
 
   @Autowired private MockMvc mockMvc;
-  @Autowired LeaderboardRepository repository;
+  @Autowired LeaderboardEntryRepository repository;
+
+  @AfterEach
+  void tearDown() {
+    repository.deleteAll();
+  }
 
   @Test
   void getLeaderboardTest() throws Exception {
-    LeaderboardEntryEntity entity = new LeaderboardEntryEntity("g-looter", 100);
+    LeaderboardEntry entity = new LeaderboardEntry("g-looter", 100);
     repository.saveAll(List.of(entity));
 
-    mockMvc.perform(get("/api/v1/leaderboard"))
+    mockMvc
+        .perform(get("/api/v1/leaderboard"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
         .andExpect(jsonPath("$.[0].position", is(1)))

@@ -1,33 +1,37 @@
 package com.gloot.springbootcodetest.leaderboard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
-import com.gloot.springbootcodetest.SpringBootComponentTest;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-public class LeaderboardServiceTest extends SpringBootComponentTest {
+@ExtendWith(MockitoExtension.class)
+public class LeaderboardServiceTest {
 
-  @Autowired LeaderboardRepository repository;
-  @Autowired LeaderboardService service;
+  @Mock LeaderboardEntryRepository repository;
+  @InjectMocks LeaderboardService service;
 
   @Test
   void getLeaderboard() {
-    List<LeaderboardEntryEntity> entities = List
-        .of(new LeaderboardEntryEntity("g-looter-2", 90),
-            new LeaderboardEntryEntity("g-looter-1", 100));
-    repository.saveAll(entities);
+    List<LeaderboardEntry> entities =
+        List.of(new LeaderboardEntry("g-looter-2", 90), new LeaderboardEntry("g-looter-1", 100));
 
-    List<LeaderboardEntryDto> leaderboard = service
-        .getListOfAllLeaderboardEntriesAsDTO();
+    when(repository.findAll()).thenReturn(new ArrayList<>(entities));
+
+    List<LeaderboardEntryDto> leaderboard = service.getListOfAllLeaderboardEntriesAsDTO();
     assertEquals(entities.size(), leaderboard.size());
     // Verify ordering by score
     assertEqual(1, entities.get(1), leaderboard.get(0));
     assertEqual(2, entities.get(0), leaderboard.get(1));
   }
 
-  private void assertEqual(int pos, LeaderboardEntryEntity entity, LeaderboardEntryDto dto) {
+  private void assertEqual(int pos, LeaderboardEntry entity, LeaderboardEntryDto dto) {
     assertEquals(pos, dto.getPosition());
     assertEquals(entity.getNick(), dto.getNick());
     assertEquals(entity.getScore(), dto.getScore());

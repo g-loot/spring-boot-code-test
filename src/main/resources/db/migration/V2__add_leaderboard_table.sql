@@ -1,5 +1,5 @@
-CREATE TABLE IF NOT EXISTS `leaderboard` (
-    `uuid` UUID DEFAULT RANDOM_UUID() NOT NULL PRIMARY KEY,
-    `nick` VARCHAR(20),
-    `score` INT
-);
+CREATE TABLE IF NOT EXISTS leaderboard_entry (
+    id VARCHAR(255) PRIMARY KEY,
+    nick VARCHAR(20) NOT NULL,
+    score INT NOT NULL
+)
